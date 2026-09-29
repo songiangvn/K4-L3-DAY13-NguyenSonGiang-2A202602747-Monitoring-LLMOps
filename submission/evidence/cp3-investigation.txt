@@ -1,0 +1,27 @@
+=== 1. METRICS (from data/logs.jsonl, feature=monitoring) ===
+[baseline] 2026-09-29T14:03:46Z -> 2026-09-29T14:03:49Z | requests=5 ok=5 failed=0 | latency P50=153.0 P95=415.0 P99=415.0 ms | TTFT P95=50.0 ms | over 2000ms: 0/5 | tokens_out=635 cost=$0.0100 | retrieval_success=5/5
+[incident] 2026-09-29T14:03:53Z -> 2026-09-29T14:04:09Z | requests=5 ok=5 failed=0 | latency P50=2654.0 P95=2655.0 P99=2655.0 ms | TTFT P95=50.0 ms | over 2000ms: 5/5 | tokens_out=578 cost=$0.0092 | retrieval_success=5/5
+
+=== 2. LOGS: slowest response_sent in incident window ===
+{"ts": "2026-09-29T14:04:05.701996Z", "event": "response_sent", "correlation_id": "req-f8236407", "trace_id": "ed9c4c45bdd9243902de693f222c2985", "feature": "monitoring", "latency_ms": 2655, "ttft_ms": 50, "tokens_in": 35, "tokens_out": 96, "cost_usd": 0.001545, "tool_name": "retrieval", "tool_success": true}
+All log lines with that correlation_id:
+   {"service": "api", "payload": {"message_preview": "Summarize the observability workflow for an AI API."}, "event": "request_received", "user_id_hash": "dc9b2ec8da9d", "correlation_id": "req-f8236407", "session_id": "k4-l3a-challenge-s03", "model": "claude-sonnet-4-5", "env": "dev", "feature": "monitoring", "level": "info", "ts": "2026-09-29T14:04:03.043064Z"}
+   {"service": "api", "latency_ms": 2655, "ttft_ms": 50, "tokens_in": 35, "tokens_out": 96, "cost_usd": 0.001545, "quality_score": 0.8, "tool_name": "retrieval", "tool_success": true, "trace_id": "ed9c4c45bdd9243902de693f222c2985", "payload": {"answer_preview": "Starter answer. You should improve this output logic and add better quality chec..."}, "event": "response_sent", "user_id_hash": "dc9b2ec8da9d", "correlation_id": "req-f8236407", "session_id": "k4-l3a-challenge-s03", "model": "claude-sonnet-4-5", "env": "dev", "feature": "monitoring", "level": "info", "ts": "2026-09-29T14:04:05.701996Z"}
+
+=== 3. TRACES: observations of that trace + baseline comparison ===
+[incident] trace=ed9c4c45bdd9243902de693f222c2985 metadata.correlation_id=req-f8236407
+   AGENT      lab-agent-run   parent=-              latency=2.655s level=DEFAULT prompt_version=1 doc_count=1
+   RETRIEVER  rag-retrieval   parent=lab-agent-run  latency=2.501s level=DEFAULT
+   GENERATION llm-generation  parent=lab-agent-run  latency=0.153s level=DEFAULT model=claude-sonnet-4-5 ttft=0.05s promptVersion=1
+[baseline] trace=83efdba4902b0d8bcbb0068b22b84eea metadata.correlation_id=req-4b034425
+   AGENT      lab-agent-run   parent=-              latency=0.416s level=DEFAULT prompt_version=1 doc_count=1
+   RETRIEVER  rag-retrieval   parent=lab-agent-run  latency=0s level=DEFAULT
+   GENERATION llm-generation  parent=lab-agent-run  latency=0.158s level=DEFAULT model=claude-sonnet-4-5 ttft=0.05s promptVersion=1
+
+Span latency per window (s):
+  [baseline] rag-retrieval   n=5 min=0.000 max=0.001
+  [baseline] llm-generation  n=5 min=0.152 max=0.158
+  [baseline] lab-agent-run   n=5 min=0.153 max=0.416
+  [incident] rag-retrieval   n=5 min=2.501 max=2.502
+  [incident] llm-generation  n=5 min=0.151 max=0.153
+  [incident] lab-agent-run   n=5 min=2.653 max=2.655

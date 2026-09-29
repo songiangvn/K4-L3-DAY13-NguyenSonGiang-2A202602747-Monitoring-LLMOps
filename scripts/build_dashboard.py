@@ -294,11 +294,15 @@ def main() -> int:
     parser.add_argument("--config", type=Path, default=REPO_ROOT / "config" / "dashboard.yaml")
     parser.add_argument("--logs", type=Path, default=REPO_ROOT / "data" / "logs.jsonl")
     parser.add_argument("--out", type=Path, default=REPO_ROOT / "reports" / "dashboard.html")
+    parser.add_argument("--feature", help="Only include records of this feature (e.g. the challenge's affected_feature)")
     args = parser.parse_args()
 
     config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
     minutes = config["dashboard"]["time_range_minutes"]
     records = load_records(args.logs)
+    if args.feature:
+        records = [r for r in records if r.get("feature") == args.feature]
+        config["dashboard"]["title"] += f" · feature={args.feature}"
     if not records:
         print(f"No log records in {args.logs}")
         return 1

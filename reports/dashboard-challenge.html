@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="30">
+<title>Day 13 Dashboard</title><style>
+:root { color-scheme: light;
+  --page:#f9f9f7; --surface-1:#fcfcfb; --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
+  --good:#0ca30c; --critical:#d03b3b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark;
+  --page:#0d0d0d; --surface-1:#1a1a19; --text-primary:#ffffff; --text-secondary:#c3c2b7;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; } }
+:root[data-theme="dark"] { color-scheme: dark;
+  --page:#0d0d0d; --surface-1:#1a1a19; --text-primary:#ffffff; --text-secondary:#c3c2b7;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--page); color:var(--text-primary); font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1240px; margin:0 auto; padding:24px 16px; }
+h1 { font-size:22px; margin:0 0 4px; } .sub { color:var(--text-secondary); margin:0 0 20px; }
+.grid-panels { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr)); gap:16px; }
+.panel { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:16px; min-width:0; }
+.panel header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.panel h2 { font-size:16px; margin:0; }
+.meta, .query { color:var(--text-secondary); font-size:12px; margin:6px 0; overflow-wrap:anywhere; }
+.query code { font-size:11px; color:var(--muted); }
+.status { font-size:12px; font-weight:600; padding:2px 8px; border-radius:999px; border:1px solid currentColor; white-space:nowrap; }
+.status.ok { color:var(--good); } .status.breach { color:var(--critical); } .status.nodata { color:var(--muted); }
+.tiles { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+.tile { border:1px solid var(--border); border-radius:8px; padding:6px 10px; min-width:96px; }
+.tile-label { font-size:11px; color:var(--text-secondary); } .tile-value { font-size:18px; font-weight:600; }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--text-secondary); margin:4px 0; }
+.legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:-1px; }
+.chart { width:100%; height:auto; display:block; }
+.chart .grid { stroke:var(--grid); stroke-width:1; } .chart .axis { stroke:var(--axis); stroke-width:1; }
+.chart .threshold { stroke:var(--critical); stroke-width:1.5; stroke-dasharray:5 4; }
+.chart .tick { fill:var(--muted); font-size:10px; font-variant-numeric:tabular-nums; }
+.chart .dot { stroke:var(--surface-1); stroke-width:2; }
+</style></head>
+<body><main>
+<h1>K4-L3A Day 13 Monitoring &amp; LLMOps · feature=monitoring</h1>
+<p class="sub">Time range: last 60 min · 2026-09-29 13:05 → 14:05 UTC ·
+refresh 30s · source: data/logs.jsonl (20 records in window)</p>
+<div class="grid-panels">
+<section class="panel">
+  <header>
+    <h2>Latency percentiles and TTFT</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>ms</b> · threshold: <b>p95 ≤ 3,000</b> · events: response_sent</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">p50</div><div class="tile-value">2,653.00</div></div><div class="tile"><div class="tile-label">p95</div><div class="tile-value">2,655.00</div></div><div class="tile"><div class="tile-label">p99</div><div class="tile-value">2,655.00</div></div><div class="tile"><div class="tile-label">ttft_p95</div><div class="tile-value">50.00</div></div></div>
+  <div class="legend"><span><i style="background:var(--series-1)"></i>P50</span><span><i style="background:var(--series-2)"></i>P95</span><span><i style="background:var(--series-3)"></i>P99</span><span><i style="background:var(--series-4)"></i>TTFT P95</span></div>
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">1,500</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">3,000</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="threshold"/><text x="548" y="22.7" class="tick" text-anchor="end">threshold 3,000</text><polyline points="535.5,166.5 543.8,43.8" fill="none" stroke="var(--series-1)" stroke-width="2"/><circle cx="535.5" cy="166.5" r="4" fill="var(--series-1)" class="dot"><title>P50 @ 14:03: 153.00</title></circle><circle cx="543.8" cy="43.8" r="4" fill="var(--series-1)" class="dot"><title>P50 @ 14:04: 2,653.00</title></circle><polyline points="535.5,43.7 543.8,43.7" fill="none" stroke="var(--series-2)" stroke-width="2"/><circle cx="535.5" cy="43.7" r="4" fill="var(--series-2)" class="dot"><title>P95 @ 14:03: 2,654.00</title></circle><circle cx="543.8" cy="43.7" r="4" fill="var(--series-2)" class="dot"><title>P95 @ 14:04: 2,655.00</title></circle><polyline points="535.5,43.7 543.8,43.7" fill="none" stroke="var(--series-3)" stroke-width="2"/><circle cx="535.5" cy="43.7" r="4" fill="var(--series-3)" class="dot"><title>P99 @ 14:03: 2,654.00</title></circle><circle cx="543.8" cy="43.7" r="4" fill="var(--series-3)" class="dot"><title>P99 @ 14:04: 2,655.00</title></circle><polyline points="535.5,171.5 543.8,171.5" fill="none" stroke="var(--series-4)" stroke-width="2"/><circle cx="535.5" cy="171.5" r="4" fill="var(--series-4)" class="dot"><title>TTFT P95 @ 14:03: 50.00</title></circle><circle cx="543.8" cy="171.5" r="4" fill="var(--series-4)" class="dot"><title>TTFT P95 @ 14:04: 50.00</title></circle><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>event == &quot;response_sent&quot; | percentile(latency_ms, [50, 95, 99]); percentile(ttft_ms, [95])</code></p>
+</section>
+<section class="panel">
+  <header>
+    <h2>Request traffic</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>requests_per_minute</b> · threshold: <b>rate_per_minute ≥ 1</b> · events: request_received</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">count</div><div class="tile-value">10</div></div><div class="tile"><div class="tile-label">rate_per_minute</div><div class="tile-value">5.00</div></div></div>
+  
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">3.5</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">7</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><line x1="48" x2="548" y1="153.0" y2="153.0" class="threshold"/><text x="548" y="149.0" class="tick" text-anchor="end">threshold 1</text><rect x="532.3" y="26.7" width="6.3" height="147.3" rx="2" fill="var(--series-1)"><title>Requests @ 14:03: 7</title></rect><rect x="540.7" y="110.9" width="6.3" height="63.1" rx="2" fill="var(--series-1)"><title>Requests @ 14:04: 3</title></rect><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>event == &quot;request_received&quot; | count() by 1m</code></p>
+</section>
+<section class="panel">
+  <header>
+    <h2>Error rate and retrieval success</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>percent</b> · threshold: <b>error_rate_pct ≤ 2</b> · events: request_received, request_failed</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">error_rate_pct</div><div class="tile-value">0.00</div></div><div class="tile"><div class="tile-label">count_by_value</div><div class="tile-value">none</div></div><div class="tile"><div class="tile-label">tool_success_rate_pct</div><div class="tile-value">100.00</div></div></div>
+  <div class="legend"><span><i style="background:var(--series-1)"></i>Error rate</span><span><i style="background:var(--series-2)"></i>Retrieval success</span></div>
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">50</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">100</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><line x1="48" x2="548" y1="171.1" y2="171.1" class="threshold"/><text x="548" y="167.1" class="tick" text-anchor="end">threshold 2</text><polyline points="535.5,174.0 543.8,174.0" fill="none" stroke="var(--series-1)" stroke-width="2"/><circle cx="535.5" cy="174.0" r="4" fill="var(--series-1)" class="dot"><title>Error rate @ 14:03: 0.00</title></circle><circle cx="543.8" cy="174.0" r="4" fill="var(--series-1)" class="dot"><title>Error rate @ 14:04: 0.00</title></circle><polyline points="535.5,26.7 543.8,26.7" fill="none" stroke="var(--series-2)" stroke-width="2"/><circle cx="535.5" cy="26.7" r="4" fill="var(--series-2)" class="dot"><title>Retrieval success @ 14:03: 100.00</title></circle><circle cx="543.8" cy="26.7" r="4" fill="var(--series-2)" class="dot"><title>Retrieval success @ 14:04: 100.00</title></circle><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>count(event == &quot;request_failed&quot;) / count(event == &quot;request_received&quot;) * 100; count_by(error_type); count(tool_success == true) / count(tool_success != null) * 100</code></p>
+</section>
+<section class="panel">
+  <header>
+    <h2>Cost over time</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>usd</b> · threshold: <b>total ≤ 2.50</b> · events: response_sent</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">total</div><div class="tile-value">$0.0192</div></div><div class="tile"><div class="tile-label">sum_by_minute</div><div class="tile-value">$0.0115</div></div></div>
+  
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">0.00573</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">0.01146</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><rect x="532.3" y="26.7" width="6.3" height="147.3" rx="2" fill="var(--series-1)"><title>Cost @ 14:03: $0.0115</title></rect><rect x="540.7" y="74.0" width="6.3" height="100.0" rx="2" fill="var(--series-1)"><title>Cost @ 14:04: $0.0078</title></rect><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>event == &quot;response_sent&quot; | sum(cost_usd) by 1m; sum(cost_usd)</code></p>
+</section>
+<section class="panel">
+  <header>
+    <h2>Input and output tokens</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>tokens</b> · threshold: <b>sum_by_field ≤ 50,000</b> · events: response_sent</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">sum_by_field</div><div class="tile-value">1,213</div></div><div class="tile"><div class="tile-label">tokens_in</div><div class="tile-value">350</div></div><div class="tile"><div class="tile-label">tokens_out</div><div class="tile-value">1,213</div></div></div>
+  <div class="legend"><span><i style="background:var(--series-1)"></i>Input</span><span><i style="background:var(--series-2)"></i>Output</span></div>
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">361</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">722</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><polyline points="535.5,131.2 543.8,145.4" fill="none" stroke="var(--series-1)" stroke-width="2"/><circle cx="535.5" cy="131.2" r="4" fill="var(--series-1)" class="dot"><title>Input @ 14:03: 210</title></circle><circle cx="543.8" cy="145.4" r="4" fill="var(--series-1)" class="dot"><title>Input @ 14:04: 140</title></circle><polyline points="535.5,26.7 543.8,73.8" fill="none" stroke="var(--series-2)" stroke-width="2"/><circle cx="535.5" cy="26.7" r="4" fill="var(--series-2)" class="dot"><title>Output @ 14:03: 722</title></circle><circle cx="543.8" cy="73.8" r="4" fill="var(--series-2)" class="dot"><title>Output @ 14:04: 491</title></circle><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>event == &quot;response_sent&quot; | sum(tokens_in), sum(tokens_out)</code></p>
+</section>
+<section class="panel">
+  <header>
+    <h2>Quality proxy</h2>
+    <span class="status ok">✓ Within threshold</span>
+  </header>
+  <p class="meta">unit: <b>score_0_to_1</b> · threshold: <b>mean ≥ 0.75</b> · events: response_sent</p>
+  <div class="tiles"><div class="tile"><div class="tile-label">mean</div><div class="tile-value">0.84</div></div></div>
+  
+  <svg viewBox="0 0 560 200" role="img" class="chart"><line x1="48" x2="548" y1="174.0" y2="174.0" class="grid"/><text x="42" y="178.0" class="tick" text-anchor="end">0</text><line x1="48" x2="548" y1="100.4" y2="100.4" class="grid"/><text x="42" y="104.4" class="tick" text-anchor="end">0.425</text><line x1="48" x2="548" y1="26.7" y2="26.7" class="grid"/><text x="42" y="30.7" class="tick" text-anchor="end">0.85</text><text x="52.2" y="192" class="tick" text-anchor="middle">13:05</text><text x="135.5" y="192" class="tick" text-anchor="middle">13:15</text><text x="218.8" y="192" class="tick" text-anchor="middle">13:25</text><text x="302.2" y="192" class="tick" text-anchor="middle">13:35</text><text x="385.5" y="192" class="tick" text-anchor="middle">13:45</text><text x="468.8" y="192" class="tick" text-anchor="middle">13:55</text><line x1="48" x2="548" y1="44.1" y2="44.1" class="threshold"/><text x="548" y="40.1" class="tick" text-anchor="end">threshold 0.75</text><polyline points="535.5,29.7 543.8,26.7" fill="none" stroke="var(--series-1)" stroke-width="2"/><circle cx="535.5" cy="29.7" r="4" fill="var(--series-1)" class="dot"><title>Mean quality @ 14:03: 0.83</title></circle><circle cx="543.8" cy="26.7" r="4" fill="var(--series-1)" class="dot"><title>Mean quality @ 14:04: 0.85</title></circle><line x1="48" x2="548" y1="174" y2="174" class="axis"/></svg>
+  <p class="query"><code>event == &quot;response_sent&quot; | mean(quality_score)</code></p>
+</section></div>
+</main></body></html>
