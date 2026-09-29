@@ -3,11 +3,25 @@ primary_slo:
   name: fast_successful_requests
   window: 28d
   sli:
+    # A request is "good" only if it succeeded AND finished within 3 s.
+    # request_failed events are in total_event but can never be good, so errors burn budget too.
     good_event: 'event == "response_sent" and latency_ms <= 3000'
     total_event: 'event == "request_received"'
   target_percent: 99.5
   error_budget_percent: 0.5
-  note: Học viên phải giải thích hoặc điều chỉnh ngưỡng bằng baseline của mình.
+  error_budget:
+    formula: 'allowed_bad_requests = total_requests * (1 - 0.995)'
+    example: '10,000 requests / 28d -> 50 bad requests allowed (slow > 3 s or failed)'
+    burn_rate: 'burn_rate = (bad / total in window) / 0.005; 1.0 = budget spent exactly at day 28'
+    policy: 'budget < 25% left -> freeze prompt/model promotions until burn rate < 1 for 24h'
+  note: >-
+    Baseline measured on this repo (50 requests, concurrency 1): latency P50 154 ms,
+    P95 437 ms (includes the cold Langfuse prompt fetch), P99 686 ms, TTFT P95 50 ms,
+    error rate 0 %. The 3000 ms threshold is kept equal to the dashboard contract so
+    the SLO line and the latency panel threshold are the same number; it leaves ~7x
+    headroom over baseline P95 for a real LLM. Practice rag_slow pushed P95 to 2654 ms
+    and P99 to 2968 ms, still inside the SLO, which is why the latency alert fires
+    earlier (2000 ms) than the SLO boundary.
 guardrails:
   error_rate_pct_max: 2
   daily_cost_usd_max: 2.5

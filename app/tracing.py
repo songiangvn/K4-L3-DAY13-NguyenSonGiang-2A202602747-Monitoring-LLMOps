@@ -36,6 +36,22 @@ def get_langfuse_client():
     return get_client()
 
 
+def update_current_generation(client: Any, **kwargs: Any) -> None:
+    """Update the active generation if the client supports it (test doubles may not)."""
+    update = getattr(client, "update_current_generation", None)
+    if callable(update):
+        update(**kwargs)
+
+
+def current_trace_id(client: Any) -> str:
+    """Trace ID of the active observation, used to join structured logs with Langfuse."""
+    getter = getattr(client, "get_current_trace_id", None)
+    try:
+        return (getter() if callable(getter) else None) or ""
+    except Exception:  # tracing must never break the request path
+        return ""
+
+
 def tracing_enabled() -> bool:
     return LANGFUSE_SDK_AVAILABLE and bool(
         os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY")

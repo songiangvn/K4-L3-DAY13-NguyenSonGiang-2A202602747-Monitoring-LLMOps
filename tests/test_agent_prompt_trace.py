@@ -67,3 +67,43 @@ def test_agent_records_prompt_version_with_v4_observation_api(monkeypatch) -> No
     assert span_update["version"] == "3"
     assert propagated[0]["metadata"]["correlation_id"] == "req-12345678"
     assert propagated[-1]["prompt"] is client.prompt
+
+
+class GenerationRecordingClient(RecordingLangfuseClient):
+    def __init__(self) -> None:
+        super().__init__()
+        self.generation_updates: list[dict] = []
+
+    def update_current_generation(self, **kwargs) -> None:
+        self.generation_updates.append(kwargs)
+
+    def get_current_trace_id(self) -> str:
+        return "trace-abc"
+
+
+def test_generation_observation_receives_model_usage_cost_and_prompt(monkeypatch) -> None:
+    client = GenerationRecordingClient()
+    monkeypatch.setattr(agent_module, "get_langfuse_client", lambda: client)
+    monkeypatch.setattr(agent_module, "tracing_enabled", lambda: True)
+
+    agent = agent_module.LabAgent()
+    result = agent_module.LabAgent.run.__wrapped__(
+        agent,
+        user_id="student-01",
+        feature="qa",
+        session_id="session-01",
+        message="My email is student@vinuni.edu.vn, explain traces",
+        correlation_id="req-12345678",
+    )
+
+    generation = client.generation_updates[-1]
+    assert generation["model"] == agent.model
+    assert generation["prompt"] is client.prompt
+    assert generation["usage_details"]["input"] == result.tokens_in
+    assert generation["usage_details"]["output"] == result.tokens_out
+    assert generation["cost_details"]["total"] == result.cost_usd
+    assert "student@" not in str(generation["input"])
+    retrieval = client.span_updates[0]
+    assert retrieval["output"]["doc_count"] == 1
+    assert "student@" not in str(retrieval["input"])
+    assert result.trace_id == "trace-abc"

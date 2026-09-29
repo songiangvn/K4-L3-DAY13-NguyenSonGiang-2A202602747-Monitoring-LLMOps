@@ -1,0 +1,2 @@
+﻿day13-chat v1: labels=['baseline', 'production'] | first line: 'Feature={{feature}}'
+day13-chat v2: labels=['candidate', 'latest'] | first line: 'Answer in no more than three concise bullet points.'
